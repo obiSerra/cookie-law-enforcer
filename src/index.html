@@ -51,10 +51,17 @@
         <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 
         <p>OI</p>
+
+
+
         <script src="./main.js"></script>
         <script>
-            var cl = new CookieLawEnforcer('#');
-
+            var cl = new CookieLawEnforcer('http://....', {
+                bannerMsg: '<>html....',
+                bannerStyle: null,
+                linkStyle: null,
+                buttonStyle: null
+            });
             cl.init();
         </script>
     </body>

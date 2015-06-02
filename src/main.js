@@ -2,10 +2,6 @@
     /**
      *
      * @param privacyLink String The url of the privacy policy page. Required
-     * @param cookieOptions Object The cookie related configurations
-     *                              cookieName:     String, the name of the privacy cookie. Default: acceptCookies
-     *                              expires:        String, expiration date. Default: +1 year
-     *                              maxAge:         Number, the cookie duration. Default: 60*60*24*365
      * @param bannerOptions Object The banner related configurations
      *                              bannerMsg:      String, the disclaimer text
      *                              bannerStyle:    Object, an hashmap with css rules. {'rule-name': 'rule value'}.
@@ -14,11 +10,15 @@
      *                                              null if external css is provided
      *                              buttonStyle:    Object, an hashmap with css rules for the Ok button
      *                                              null if external css is provided
+     * @param cookieOptions Object The cookie related configurations
+     *                              cookieName:     String, the name of the privacy cookie. Default: acceptCookies
+     *                              expires:        String, expiration date. Default: +1 year
+     *                              maxAge:         Number, the cookie duration. Default: 60*60*24*365
      * @param scrollDistance Number The required amount of scroll to be accepted
      *
      * @constructor
      */
-    function CookieLawEnforcer (privacyLink, cookieOptions, bannerOptions, scrollDistance) {
+    function CookieLawEnforcer (privacyLink, bannerOptions, cookieOptions, scrollDistance) {
 
         // Dataproofing
         if (!privacyLink) { // -- TODO Migliorare messaggio di errore
