@@ -20,11 +20,6 @@
      */
     function CookieLawEnforcer (privacyLink, bannerOptions, cookieOptions, scrollDistance) {
 
-        // Dataproofing
-        if (!privacyLink) { // -- TODO Migliorare messaggio di errore
-            throw new Error ('Inserire un link alla pagina della privacy');
-        }
-
         cookieOptions = cookieOptions || {};
         bannerOptions = bannerOptions || {};
 
@@ -39,7 +34,7 @@
         }
 
         function checkCookie (cName) {
-            var regex = new RegExp('(?:(?:^|.*;\s*)' + cName + '\s*\=\s*([^;]*).*$)|^.*$');
+            var regex = new RegExp('(?:(?:^|.*;\s* )' + cName + '\s*\=\s*([^;]*).*$)|^.*$');
             return document.cookie.replace(regex, '$1');
         }
 
@@ -156,6 +151,10 @@
 
         function generateBanner (privacyLink, bannerMsg) {
 
+            if (!bannerMsg && !privacyLink) {
+                throw new Error ('Inserire un link alla pagina della privacy');
+            }
+
             bannerMsg = bannerMsg || 'Questo sito utilizza anche cookie di profilazione per inviarti ' +
                 'pubblicit&agrave; e servizi in linea con le tue preferenze. Se vuoi saperne di pi&ugrave; o ' +
                 'negare il consenso a tutti o ad alcuni cookie ' +
@@ -172,7 +171,7 @@
         }
 
         function appendBanner (bannerEl) {
-            document.body.appendChild(bannerEl);
+            document.body.insertBefore(bannerEl, document.body.childNodes[0]);
         }
 
         function appendStyle (styleEl) {
