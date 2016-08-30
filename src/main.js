@@ -20,6 +20,11 @@
      */
     function CookieLawEnforcer (privacyLink, bannerOptions, cookieOptions, scrollDistance) {
 
+        // Dataproofing
+        if (!privacyLink) { // -- TODO Migliorare messaggio di errore
+            throw new Error ('Inserire un link alla pagina della privacy');
+        }
+
         cookieOptions = cookieOptions || {};
         bannerOptions = bannerOptions || {};
 
@@ -34,8 +39,9 @@
         }
 
         function checkCookie (cName) {
-            var regex = new RegExp('(?:(?:^|.*;\s* )' + cName + '\s*\=\s*([^;]*).*$)|^.*$');
-            return document.cookie.replace(regex, '$1');
+            return document.cookie.split(";").filter(function (c) {
+                    return c.indexOf(cName) > -1;
+                }).length > 0;
         }
 
         function generateCookieStr (name, maxAge, expires) {
@@ -151,10 +157,6 @@
 
         function generateBanner (privacyLink, bannerMsg) {
 
-            if (!bannerMsg && !privacyLink) {
-                throw new Error ('Inserire un link alla pagina della privacy');
-            }
-
             bannerMsg = bannerMsg || 'Questo sito utilizza anche cookie di profilazione per inviarti ' +
                 'pubblicit&agrave; e servizi in linea con le tue preferenze. Se vuoi saperne di pi&ugrave; o ' +
                 'negare il consenso a tutti o ad alcuni cookie ' +
@@ -171,7 +173,7 @@
         }
 
         function appendBanner (bannerEl) {
-            document.body.insertBefore(bannerEl, document.body.childNodes[0]);
+            document.body.appendChild(bannerEl);
         }
 
         function appendStyle (styleEl) {
@@ -193,14 +195,26 @@
             }
         }
 
-        // Helper
-        function addEvent(el, type, handler) {
+        function singleAttachEvent(el, type, handler) {
             if (el.attachEvent) {
                 el.attachEvent('on'+type, handler);
             }
             else {
                 el.addEventListener(type, handler);
             }
+        }
+
+        // Helper
+        function addEvent(el, type, handler) {
+            if (el.length > 0) {
+                [].slice.call(el).forEach(function (e) {
+                    singleAttachEvent(e, type, handler);
+                });
+            } else {
+                singleAttachEvent(el, type, handler);
+            }
+
+
         }
 
         function getTopOffset () {
@@ -229,7 +243,7 @@
             if (!checkCookie(this.cookieName)) {
 
                 $banner = generateBanner(this.privacyLink, this.bannerMsg);
-                button = $banner.querySelectorAll('button')[0];
+                button = $banner.querySelectorAll('button');
                 $style = generateStyle(this.bannerStyle, this.linkStyle, this.buttonStyle);
                 appendStyle($style);
                 appendBanner($banner);
